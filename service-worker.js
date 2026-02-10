@@ -1,4 +1,4 @@
-const CACHE_NAME = "options-calc-v1";
+const CACHE_NAME = "options-calc-v2";
 const ASSETS = [
   "./",
   "./index.html",
@@ -32,3 +32,4 @@ self.addEventListener("fetch", (event) => {
     caches.match(req).then(cached => cached || fetch(req))
   );
 });
+
