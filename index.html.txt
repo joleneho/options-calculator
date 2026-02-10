@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0b0f1a" />
+  <title>Options Trading Calculator</title>
+
+  <!-- PWA manifest -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="brand">options trading calculator</div>
+
+    <div class="card">
+      <div class="tabs" role="tablist" aria-label="Calculator Tabs">
+        <button class="tab active" data-tab="pos" role="tab" aria-selected="true">Position Sizing</button>
+        <button class="tab" data-tab="bs" role="tab" aria-selected="false">Black–Scholes</button>
+      </div>
+
+      <!-- POSITION SIZING -->
+      <section class="panel active" id="panel-pos" role="tabpanel">
+        <div class="grid">
+          <!-- Left -->
+          <div class="col">
+            <h2>Options Position Size</h2>
+
+            <div class="row">
+              <div>
+                <label>Account Size</label>
+                <div class="inputRow">
+                  <span class="prefix">$</span>
+                  <input id="acc" inputmode="decimal" value="100000" />
+                </div>
+              </div>
+              <div>
+                <label>Risk Percentage (%)</label>
+                <div class="inputRow">
+                  <span class="prefix">%</span>
+                  <input id="riskPct" inputmode="decimal" value="1.0" />
+                </div>
+              </div>
+            </div>
+
+            <label>Strategy</label>
+            <select id="strategy">
+              <option value="LONG_CALL">Buy Call (Long Call)</option>
+              <option value="LONG_PUT">Buy Put (Long Put)</option>
+              <option value="SHORT_PUT_CSP">Sell Put (Cash-Secured Put)</option>
+              <option value="SHORT_CALL_COV">Sell Call (Covered Call)</option>
+              <option value="SHORT_CALL_NAKED">Sell Call (Naked) — needs risk cap or stop</option>
+              <option value="SHORT_PUT_NAKED">Sell Put (Naked/Margin) — needs risk cap or stop</option>
+              <option value="VERTICAL_CREDIT">Credit Spread (Defined Risk)</option>
+              <option value="VERTICAL_DEBIT">Debit Spread (Defined Risk)</option>
+            </select>
+
+            <div class="row">
+              <div>
+                <label>Strike Price</label>
+                <div class="inputRow">
+                  <span class="prefix">$</span>
+                  <input id="strike" inputmode="decimal" value="200" />
+                </div>
+              </div>
+              <div>
+                <label>Expiry Date</label>
+                <div class="inputRow">
+                  <span class="prefix">📅</span>
+                  <input id="expiry" type="date" />
+                </div>
+              </div>
+            </div>
+
+            <label>Option Price (Premium) — per contract</label>
+            <div class="inputRow">
+              <span class="prefix">$</span>
+              <input id="prem" inputmode="decimal" value="38.73" />
+            </div>
+
+            <div class="row">
+              <div>
+                <label>Contract Multiplier</label>
+                <div class="inputRow">
+                  <span class="prefix">×</span>
+                  <input id="mult" inputmode="decimal" value="100" />
+                </div>
+              </div>
+              <div>
+                <label>Stop Premium (optional)</label>
+                <div class="inputRow">
+                  <span class="prefix">$</span>
+                  <input id="stopPrem" inputmode="decimal" value="20" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Conditional inputs area -->
+            <div class="row" id="conditionalRow" style="display:none;">
+              <div id="costBasisWrap" style="display:none;">
+                <label>Stock Cost Basis (Covered Call)</label>
+                <div class="inputRow">
+                  <span class="prefix">$</span>
+                  <input id="costBasis" inputmode="decimal" value="200" />
+                </div>
+              </div>
+
+              <div id="riskCapWrap" style="display:none;">
+                <label>Risk Cap per Contract (Naked)</label>
+                <div class="inputRow">
+                  <span class="prefix">$</span>
+                  <input id="riskCap" inputmode="decimal" placeholder="e.g. 300" />
+                </div>
+              </div>
+
+              <div id="spreadWrap" style="display:none;">
+                <label>Spread Width ($) (Defined Risk)</label>
+                <div class="inputRow">
+                  <span class="prefix">$</span>
+                  <input id="spreadWidth" inputmode="decimal" placeholder="e.g. 5" />
+                </div>
+              </div>
+            </div>
+
+            <button class="primary" id="calcPos">Recalculate</button>
+
+            <div class="note">
+              Risk models:
+              <span class="mono">Long = premium × multiplier</span> (or stop-based),
+              <span class="mono">CSP ≈ (strike − premium) × multiplier</span>,
+              <span class="mono">Covered call ≈ (cost basis − premium) × multiplier</span>,
+              spreads = defined risk.
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Right -->
+          <div class="col">
+            <h2>Results</h2>
+
+            <div class="resultCard" id="posWarn" style="display:none;">
+              <div class="k">Note</div>
+              <div class="warnBox" id="posWarnText">—</div>
+            </div>
+
+            <div class="resultCard">
+              <div class="k">Contracts</div>
+              <div class="big" id="contracts">—</div>
+              <div class="sub">Number of option contracts</div>
+            </div>
+
+            <div class="resultCard">
+              <div class="k">Capital Required</div>
+              <div class="money" id="capitalReq">—</div>
+              <div class="sub" id="capitalHint">Depends on strategy (premium, collateral, margin, etc.)</div>
+            </div>
+
+            <div class="resultCard">
+              <div class="k">Amount at Risk</div>
+              <div class="money" id="riskAmt">—</div>
+              <div class="sub" id="riskPer">Risk per contract: —</div>
+              <div class="pills" id="posPills"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- BLACK–SCHOLES -->
+      <section class="panel" id="panel-bs" role="tabpanel">
+        <div class="grid">
+          <!-- Left -->
+          <div class="col">
+            <h2>Black–Scholes Estimator</h2>
+
+            <label>Option Type</label>
+            <select id="bsType">
+              <option value="CALL">Call</option>
+              <option value="PUT">Put</option>
+            </select>
+
+            <div class="row">
+              <div>
+                <label>Stock Price (S)</label>
+                <div class="inputRow">
+                  <span class="prefix">$</span>
+                  <input id="bsS" inputmode="decimal" value="200" />
+                </div>
+              </div>
+              <div>
+                <label>Strike (K)</label>
+                <div class="inputRow">
+                  <span class="prefix">$</span>
+                  <input id="bsK" inputmode="decimal" value="200" />
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label>Implied Volatility (IV %)</label>
+                <div class="inputRow">
+                  <span class="prefix">%</span>
+                  <input id="bsIV" inputmode="decimal" value="35" />
+                </div>
+              </div>
+              <div>
+                <label>Days to Expiration (DTE)</label>
+                <div class="inputRow">
+                  <span class="prefix">d</span>
+                  <input id="bsDTE" inputmode="decimal" value="30" />
+                </div>
+              </div>
+            </div>
+
+            <label>Risk-Free Rate (r %)</label>
+            <div class="inputRow">
+              <span class="prefix">%</span>
+              <input id="bsR" inputmode="decimal" value="4.5" />
+            </div>
+
+            <h2 class="mt">Sliders</h2>
+
+            <label>Stock Price Slider</label>
+            <div class="sliderRow">
+              <input id="sSlider" type="range" min="1" max="1000" step="0.5" value="200" />
+              <span class="pill mono" id="sSliderVal">$200.00</span>
+            </div>
+
+            <label>IV Slider</label>
+            <div class="sliderRow">
+              <input id="ivSlider" type="range" min="1" max="250" step="0.5" value="35" />
+              <span class="pill mono" id="ivSliderVal">35.0%</span>
+            </div>
+
+            <label>DTE Slider</label>
+            <div class="sliderRow">
+              <input id="dteSlider" type="range" min="1" max="365" step="1" value="30" />
+              <span class="pill mono" id="dteSliderVal">30d</span>
+            </div>
+
+            <button class="primary" id="calcBS">Recalculate</button>
+
+            <div class="note">
+              Includes theoretical price + Greeks (no dividends). Uses T = DTE/365.
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Right -->
+          <div class="col">
+            <h2>Results</h2>
+
+            <div class="resultCard" id="bsWarn" style="display:none;">
+              <div class="k">Note</div>
+              <div class="warnBox" id="bsWarnText">—</div>
+            </div>
+
+            <div class="resultCard">
+              <div class="k">Theoretical Price</div>
+              <div class="money" id="bsPrice">—</div>
+              <div class="sub" id="bsMeta">—</div>
+            </div>
+
+            <div class="resultCard">
+              <div class="k">Greeks</div>
+              <div class="pills" id="greeks"></div>
+              <div class="sub">Theta shown per day; Vega shown per 1% IV.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <div class="footerNote" id="pwaStatus" aria-live="polite"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

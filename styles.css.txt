@@ -1,0 +1,231 @@
+root{
+  --bg#0b0f1a;
+  --border rgba(255,255,255,.08);
+  --text#e9ecf5;
+  --muted#a8b0c6;
+  --accent#f5c400;
+  --shadow 0 18px 60px rgba(0,0,0,.55);
+  --radius 18px;
+  --radius2 14px;
+  --inputH 48px;
+  --font system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+}
+{box-sizingborder-box}
+body{
+  margin0;
+  background
+    radial-gradient(1200px 900px at 50% -200px, rgba(245,196,0,.12), transparent 55%),
+    radial-gradient(900px 700px at 0% 100%, rgba(120,140,255,.12), transparent 55%),
+    var(--bg);
+  colorvar(--text);
+  font-familyvar(--font);
+  min-height100svh;
+  displayflex;
+  align-itemsflex-start;
+  justify-contentcenter;
+  padding16px;
+}
+.wrap{ widthmin(1120px, 100%); }
+.brand{
+  text-aligncenter;
+  font-weight950;
+  letter-spacing.6px;
+  margin 6px 0 14px;
+  font-size clamp(20px, 3.4vw, 34px);
+  text-transform lowercase;
+}
+.card{
+  border 1px solid var(--border);
+  border-radius var(--radius);
+  background linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+  box-shadow var(--shadow);
+  overflowhidden;
+}
+
+.tabs{
+  displayflex;
+  gap10px;
+  padding14px;
+  border-bottom1px solid var(--border);
+  background rgba(0,0,0,.12);
+  flex-wrapwrap;
+}
+.tab{
+  border 1px solid var(--border);
+  background rgba(255,255,255,.03);
+  color var(--text);
+  border-radius 999px;
+  padding 10px 12px;
+  font-weight900;
+  cursorpointer;
+  touch-action manipulation;
+}
+.tab.active{
+  border-color rgba(245,196,0,.35);
+  box-shadow 0 0 0 4px rgba(245,196,0,.10);
+}
+
+.panel{ displaynone; }
+.panel.active{ displayblock; }
+
+.grid{
+  displaygrid;
+  grid-template-columns minmax(320px, 1fr) minmax(320px, 1fr);
+}
+@media (max-width 860px){
+  .grid{ grid-template-columns 1fr; }
+  body{ padding12px; }
+}
+.col{ padding18px; }
+.divider{ width1px; background var(--border); }
+@media (max-width 860px){
+  .divider{ height1px; widthauto; }
+}
+
+h2{
+  margin0 0 14px 0;
+  font-size 18px;
+  letter-spacing.2px;
+}
+.mt{ margin-top18px; }
+
+label{
+  displayblock;
+  font-size 13px;
+  color var(--muted);
+  margin 14px 0 7px;
+}
+.inputRow{ positionrelative; }
+input, select{
+  width100%;
+  height var(--inputH);
+  border-radius var(--radius2);
+  border 1px solid var(--border);
+  background rgba(0,0,0,.25);
+  color var(--text);
+  padding 0 12px 0 42px;
+  outlinenone;
+  font-size 16px;
+  -webkit-appearance none;
+  appearance none;
+}
+select{ padding-left 12px; }
+inputfocus, selectfocus{
+  border-color rgba(245,196,0,.35);
+  box-shadow 0 0 0 4px rgba(245,196,0,.12);
+}
+.prefix{
+  positionabsolute;
+  left12px;
+  top50%;
+  transformtranslateY(-50%);
+  color var(--muted);
+  font-weight700;
+  user-selectnone;
+}
+
+.row{
+  displaygrid;
+  grid-template-columns 1fr 1fr;
+  gap10px;
+}
+@media (max-width 520px){
+  .row{ grid-template-columns 1fr; }
+}
+
+.primary{
+  margin-top18px;
+  height54px;
+  width100%;
+  bordernone;
+  border-radius 14px;
+  background var(--accent);
+  color #141414;
+  font-weight950;
+  font-size 16px;
+  cursorpointer;
+  touch-action manipulation;
+}
+.note{
+  margin-top10px;
+  color var(--muted);
+  font-size 12px;
+  line-height 1.45;
+}
+.mono{
+  font-variant-numeric tabular-nums;
+  font-feature-settings tnum;
+}
+
+.resultCard{
+  border 1px solid var(--border);
+  border-radius 16px;
+  background rgba(0,0,0,.22);
+  padding16px;
+  margin-bottom14px;
+}
+.k{
+  font-size 12px;
+  color var(--muted);
+  font-weight900;
+  letter-spacing.8px;
+  text-transformuppercase;
+}
+.big{
+  margin-top8px;
+  font-size 38px;
+  font-weight 950;
+  line-height 1.05;
+  color var(--accent);
+}
+.money{
+  font-size 30px;
+  font-weight 950;
+  color var(--accent);
+  margin-top8px;
+}
+.sub{
+  margin-top6px;
+  color var(--muted);
+  font-size 13px;
+  line-height 1.35;
+}
+.pills{
+  displayflex;
+  gap10px;
+  flex-wrapwrap;
+  margin-top10px;
+  color var(--muted);
+  font-size 13px;
+}
+.pill{
+  border 1px solid var(--border);
+  padding 8px 10px;
+  border-radius 999px;
+  background rgba(255,255,255,.03);
+}
+.warnBox{
+  color#ffd7d7;
+  background rgba(255,80,80,.10);
+  border 1px solid rgba(255,80,80,.18);
+  border-radius 12px;
+  padding 10px;
+}
+
+.sliderRow{
+  displaygrid;
+  grid-template-columns 1fr auto;
+  gap10px;
+  align-itemscenter;
+}
+input[type=range]{
+  padding0;
+  height 42px;
+}
+
+.footerNote{
+  margin-top 10px;
+  text-aligncenter;
+  color var(--muted);
+  font-size 12px;
+}
